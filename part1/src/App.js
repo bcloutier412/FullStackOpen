@@ -1,63 +1,63 @@
-import React from "react"
+import { useState } from "react";
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  const handleClick = (rating, setRating) => () => {
+    setRating(rating + 1);
+    setTotal(total + 1);
+  };
 
   return (
     <div>
-      <Header course={course}/>
-      <Content course={course}/>
-      <Total course={course}/>
+      <h1>give feedback</h1>
+      <Button handleClick={handleClick(good, setGood)} text={"good"} />
+      <Button handleClick={handleClick(neutral, setNeutral)} text={"neutral"} />
+      <Button handleClick={handleClick(bad, setBad)} text={"bad"} />
+      <h1>Statistics</h1>
+      <Statistics good={good} neutral={neutral} bad={bad} total={total} />
     </div>
-  )
-}
+  );
+};
 
-const Header = (props) => {
-  return (
-  <React.Fragment>
-    <h1>{props.course.name}</h1>
-  </React.Fragment>)
-}
+const Button = (props) => {
+  return <button onClick={props.handleClick}>{props.text}</button>;
+};
 
-const Content = (props) => {
-  return (
-    <React.Fragment>
-      <Part part={props.course.parts[0]} />
-      <Part part={props.course.parts[1]} />
-      <Part part={props.course.parts[2]} />
-    </React.Fragment>
-  )
-}
+const Statistics = ({ good, neutral, bad, total }) => {
+  const calculateAverage = () => {
+    return (good - bad) / total;
+  };
 
-const Part = (props) => {
-  return (
-    <React.Fragment>
-      <p>{props.part.name} {props.part.exercises}</p>
-    </React.Fragment>
-  )
-}
+  const calculatePositive = () => {
+    return ((good / total) * 100).toString() + "%";
+  };
 
-const Total = (props) => {
+  if (total === 0) return <div>No feedback given</div>;
+
   return (
-    <React.Fragment>
-      <p>Number of exercises {props.course.parts[0].exercises + props.course.parts[1].exercises + props.course.parts[2].exercises}</p>
-    </React.Fragment>
-  )
-}
-export default App
+    <table>
+      <tbody>
+        <StatisticLine text={"good"} value={good} />
+        <StatisticLine text={"neutral"} value={neutral} />
+        <StatisticLine text={"bad"} value={bad} />
+        <StatisticLine text={"all"} value={total} />
+        <StatisticLine text={"average"} value={calculateAverage()} />
+        <StatisticLine text={"positive"} value={calculatePositive()} />
+      </tbody>
+    </table>
+  );
+};
+
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  );
+};
+export default App;
