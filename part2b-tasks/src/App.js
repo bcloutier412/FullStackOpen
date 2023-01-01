@@ -1,5 +1,7 @@
+import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons"
 
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas", number: '949-874-3305' }]);
@@ -8,6 +10,7 @@ const App = () => {
     number: ''
   });
 
+  // HANDLING STATE - text input for name and number
   const handleChange = (event) => {
     setNewPerson({
       ...newPerson,
@@ -15,6 +18,7 @@ const App = () => {
     })
   }
 
+  // FORM SUBMIT - new user
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -22,6 +26,17 @@ const App = () => {
     if (!newPerson.name || !newPerson.number) {
       return alert("Please input a name and number")
     } 
+
+    // CHECK if user is already in phonebook
+    if(persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())) {
+      return alert(`${newPerson.name} already exists`)
+    }
+
+    // ADD user to the list of persons
+    setPersons(persons.concat({name: newPerson.name, number: newPerson.number}))
+
+    // RESET text input
+    setNewPerson({name: '', number: ''})
   }
 
   return (
@@ -34,7 +49,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h3>Numbers</h3>
-      ...
+        <Persons persons={persons}/>
     </div>
   );
 };
