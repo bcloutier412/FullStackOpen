@@ -1,7 +1,15 @@
-const Persons = ({ persons }) => {
+const Persons = ({ persons, filter }) => {
+
+    let filteredUsers;
+    if (filter) {
+        filteredUsers = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+    }
+    
     return (
         <div>
-            {persons.map((person) => <Person key={person.name} person={person} />)}
+            {!filter
+            ? persons.map((person) => <Person key={person.name} person={person} />)
+            : filteredUsers.map((person) => <Person key={person.name} person={person} />)}
         </div>
     )
 }

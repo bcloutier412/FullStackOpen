@@ -1,7 +1,7 @@
-import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons"
+import Filter from "./components/Filter"
 
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas", number: '949-874-3305' }]);
@@ -9,6 +9,7 @@ const App = () => {
     name: '',
     number: ''
   });
+  const [filter, setFilter] = useState('')
 
   // HANDLING STATE - text input for name and number
   const handleChange = (event) => {
@@ -19,8 +20,8 @@ const App = () => {
   }
 
   // FORM SUBMIT - new user
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = (event) => {
+    event.preventDefault()
 
     // CHECK if user input is valid
     if (!newPerson.name || !newPerson.number) {
@@ -28,7 +29,7 @@ const App = () => {
     } 
 
     // CHECK if user is already in phonebook
-    if(persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())) {
+    if (persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())) {
       return alert(`${newPerson.name} already exists`)
     }
 
@@ -39,17 +40,27 @@ const App = () => {
     setNewPerson({name: '', number: ''})
   }
 
+  const handleFilter = (event) => {
+    setFilter(event.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Filter filter={filter} handleFilter={handleFilter}/>
+      
       <h3>Add a new</h3>
+
       <PersonForm
         newPerson={newPerson}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
       />
+
       <h3>Numbers</h3>
-        <Persons persons={persons}/>
+
+      <Persons persons={persons} filter={filter}/>
     </div>
   );
 };
