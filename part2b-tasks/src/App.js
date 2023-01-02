@@ -40,9 +40,13 @@ const App = () => {
     setNewPerson({name: '', number: ''})
   }
 
+  // HANDLE filtering displayed persons
   const handleFilter = (event) => {
     setFilter(event.target.value)
   }
+
+  // HANDLE deleting a user
+  const handleDelete = (name) => setPersons(persons.filter((person) => person.name !== name))
 
   return (
     <div>
@@ -60,7 +64,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} filter={filter}/>
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete}/>
     </div>
   );
 };
