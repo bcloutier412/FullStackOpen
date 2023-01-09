@@ -10,8 +10,8 @@ const Persons = ({ persons, filter, handleDelete }) => {
     return (
         <div>
             {!filter
-            ? persons.map((person) => <Person key={person.name} person={person} handleDelete={handleDelete}/>)
-            : filteredUsers.map((person) => <Person key={person.name} person={person} handleDelete={handleDelete}/>)}
+            ? persons.map((person) => <Person key={person.id} person={person} handleDelete={handleDelete}/>)
+            : filteredUsers.map((person) => <Person key={person.id} person={person} handleDelete={handleDelete}/>)}
         </div>
     )
 }
@@ -20,7 +20,7 @@ const Person = ({ person, handleDelete }) => {
     return (
         <div>
             {person.name} {person.number}
-            <button onClick={() => handleDelete(person.name)}>delete</button>
+            <button onClick={() => handleDelete(person.id)}>delete</button>
         </div>
 
     )}
