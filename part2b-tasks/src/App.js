@@ -37,12 +37,13 @@ const App = () => {
     }
 
     // CHECK if user is already in phonebook
-    if (
-      persons.find(
-        (person) => person.name.toLowerCase() === newPerson.name.toLowerCase()
-      )
-    ) {
-      return alert(`${newPerson.name} already exists`);
+    let userInPhonebook = persons.find(
+      (person) => person.name.toLowerCase() === newPerson.name.toLowerCase()
+    )
+    if (userInPhonebook) {
+      console.log(userInPhonebook)
+      personService.update()
+      return 
     }
 
     // ADD user to the db
@@ -62,11 +63,18 @@ const App = () => {
   };
 
   // HANDLE deleting a user
-  const handleDelete = (id) =>
-    personService
-    .deleteUser(id)
-    .then(deletedUser => console.log(deletedUser))
-    // setPersons(persons.filter((person) => person.id !== id));
+  const handleDelete = (id, name) => {
+    if (window.confirm(`Delete ${name}`)) {
+      personService
+      .deleteUser(id)
+      .then(() => {
+        setPersons(persons.filter((person) => person.id !== id));
+      })
+      .catch(() => {
+        alert('Invalid User')
+      });
+    }
+  };
 
   return (
     <div>
