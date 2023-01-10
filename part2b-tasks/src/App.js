@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 
 import personService from "./services/persons";
 
@@ -12,11 +13,15 @@ const App = () => {
     number: "",
   });
   const [filter, setFilter] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
-    });
+    }).catch(() => {
+      sendMessage(setErrorMessage, 'Cannot fetch phonebook data', 3000);
+    })
   }, []);
 
   // HANDLING STATE - text input for name and number
@@ -39,17 +44,33 @@ const App = () => {
     // CHECK if user is already in phonebook
     let userInPhonebook = persons.find(
       (person) => person.name.toLowerCase() === newPerson.name.toLowerCase()
-    )
+    );
     if (userInPhonebook) {
-      if (window.confirm(`${userInPhonebook.name} is already added to phonebook, replace the old number with a new one?`)) {
+      if (
+        window.confirm(
+          `${userInPhonebook.name} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
         personService
           .update(userInPhonebook.id, newPerson)
           .then((updatedUser) => {
-            setPersons(persons.map(person => person.id === updatedUser.id ? updatedUser : person))
+            setPersons(
+              persons.map((person) =>
+                person.id === updatedUser.id ? updatedUser : person
+              )
+            );
             setNewPerson({ name: "", number: "" });
-      })
+            sendMessage(setSuccessMessage, `${userInPhonebook.name} has been updated`, 3000)
+          })
+          .catch(() => {
+            // Removes user from state
+            setPersons(
+              persons.filter((person) => person.id !== userInPhonebook.id)
+            );
+            sendMessage(setErrorMessage, `${userInPhonebook.name} is not a valid user`, 3000);
+          });
       }
-      return 
+      return;
     }
 
     // ADD user to the db
@@ -60,6 +81,12 @@ const App = () => {
         setPersons(persons.concat(newPerson));
         // RESET text input
         setNewPerson({ name: "", number: "" });
+        // Renders Success
+        sendMessage(setSuccessMessage, `${newPerson.name} has been added`, 3000);
+      })
+      .catch(() => {
+        // Renders Error
+        sendMessage(setErrorMessage, `unable to add ${newPerson.name} to the database`, 3000);
       });
   };
 
@@ -72,20 +99,34 @@ const App = () => {
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}`)) {
       personService
-      .deleteUser(id)
-      .then(() => {
-        setPersons(persons.filter((person) => person.id !== id));
-      })
-      .catch(() => {
-        alert('Invalid User')
-      });
+        .deleteUser(id)
+        .then(() => {
+          // Removes user from state
+          setPersons(persons.filter((person) => person.id !== id));
+          // Renders success message
+          sendMessage(setSuccessMessage, `${name} has been deleted`, 3000)
+        })
+        .catch(() => {
+          // Remove invalid user from state
+          setPersons(persons.filter((person) => person.id !== id));
+          // Renders error message
+          sendMessage(setErrorMessage, `${name} is already not in the phonebook`, 3000)
+        });
     }
   };
-
+  const sendMessage = (setMessageState, message, timeoutDuration) => {
+    setMessageState(message);
+    setTimeout(() => {
+      setMessageState(null);
+    }, timeoutDuration);
+  }
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification
+        successMessage={successMessage}
+        errorMessage={errorMessage}
+      />
       <Filter filter={filter} handleFilter={handleFilter} />
 
       <h3>Add a new</h3>
