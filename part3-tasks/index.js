@@ -1,7 +1,13 @@
 const express = require("express");
 const app = express();
+const morgan = require('morgan')
 
 app.use(express.json());
+
+morgan.token('data', (req, res) => {
+  return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 let persons = [
   {
@@ -72,6 +78,14 @@ app.post("/api/persons", (request, response) => {
 
     response.send(person)
 })
+
+// Catch unhandled error situations
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
