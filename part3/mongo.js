@@ -21,22 +21,22 @@ const noteSchema = new mongoose.Schema({
 //using mongoose.model returns a constructor that we can use to create note objects
 const Note = mongoose.model('Note', noteSchema)
 
-// //creating a new note object from the Note contructor.
-// const note = new Note({
-//     content: 'Html is easy',
-//     date: new Date(),
-//     important: true,
-// })
+//creating a new note object from the Note contructor.
+const note = new Note({
+    content: 'this is the second note',
+    date: new Date(),
+    important: true,
+})
 
-// note.save().then(result => {
-//     console.log(result)
-//     mongoose.connection.close()
-// })
-
-// Finding data in the database
-Note.find({}).then(result => {
-    result.forEach(note => {
-      console.log(note)
-    })
+note.save().then(result => {
+    console.log(result)
     mongoose.connection.close()
-  })
+})
+
+// // Finding data in the database
+// Note.find({}).then(result => {
+//     result.forEach(note => {
+//       console.log(note)
+//     })
+//     mongoose.connection.close()
+//   })
