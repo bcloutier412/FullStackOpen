@@ -62,12 +62,13 @@ const App = () => {
             setNewPerson({ name: "", number: "" });
             sendMessage(setSuccessMessage, `${userInPhonebook.name} has been updated`, 3000)
           })
-          .catch(() => {
+          .catch((error) => {
+            const errorMessage = error.response.data.error
             // Removes user from state
             setPersons(
               persons.filter((person) => person.id !== userInPhonebook.id)
             );
-            sendMessage(setErrorMessage, `${userInPhonebook.name} is not a valid user`, 3000);
+            sendMessage(setErrorMessage, errorMessage, 3000);
           });
       }
       return;
@@ -84,9 +85,10 @@ const App = () => {
         // Renders Success
         sendMessage(setSuccessMessage, `${newPerson.name} has been added`, 3000);
       })
-      .catch(() => {
+      .catch((error) => {
+        const errorMessage = error.response.data.error
         // Renders Error
-        sendMessage(setErrorMessage, `unable to add ${newPerson.name} to the database`, 3000);
+        sendMessage(setErrorMessage, errorMessage, 3000);
       });
   };
 
@@ -106,11 +108,12 @@ const App = () => {
           // Renders success message
           sendMessage(setSuccessMessage, `${name} has been deleted`, 3000)
         })
-        .catch(() => {
+        .catch((error) => {
+          const errorMessage = error.response.data.error
           // Remove invalid user from state
           setPersons(persons.filter((person) => person.id !== id));
           // Renders error message
-          sendMessage(setErrorMessage, `${name} is already not in the phonebook`, 3000)
+          sendMessage(setErrorMessage, errorMessage, 3000)
         });
     }
   };

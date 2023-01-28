@@ -11,7 +11,7 @@
     "deploy": "flyctl deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "flyctl logs",
-    "openPage": "flyctl open"
+    "open": "flyctl open"
   },
   "author": "Brandon Cloutier",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "mongoose": "^6.8.4"
   },
   "devDependencies": {
+    "eslint": "^8.32.0",
     "nodemon": "^2.0.20"
   }
 }

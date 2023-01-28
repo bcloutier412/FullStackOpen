@@ -6,6 +6,7 @@ const PersonForm = ({ handleSubmit, handleChange, newPerson}) => {
       </div>
       <div>
         number: <input onChange={handleChange} name={'number'} value={newPerson.number}/>
+        <br /><i>Please input in this format: XXX-XXX-XXXX</i>
       </div> 
       <div>
         <button type="submit">add</button>
